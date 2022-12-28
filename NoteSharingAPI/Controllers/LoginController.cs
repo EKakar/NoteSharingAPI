@@ -9,6 +9,7 @@ namespace NoteSharingAPI.Controllers
     public class LoginController : ControllerBase
     {
         UserManager userManager = new UserManager(new EfUserDal());
+        NoteManager noteManager = new NoteManager(new EfNoteDal());
         public static bool isLogin = false;
 
         [HttpGet]
@@ -18,9 +19,10 @@ namespace NoteSharingAPI.Controllers
 
             if (userManager.Login(mail, password))
             {
+                var notes = noteManager.TGetList().Where(x => x.UserId == user.UserId);
                 isLogin = true;
-                
-                return Ok(user);
+
+                return Ok(notes);
             }
 
             else

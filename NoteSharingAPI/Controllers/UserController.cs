@@ -16,7 +16,7 @@ namespace NoteSharingAPI.Controllers
         public async Task<IActionResult> AddUser(User user)
         {
             userManager.TAdd(user);
-            return View();
+            return Ok(user);
         }
     }
 }

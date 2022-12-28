@@ -9,11 +9,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-builder.Services.AddControllers(options =>
-{
-    options.ReturnHttpNotAcceptable = true;
-}).AddXmlSerializerFormatters();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
