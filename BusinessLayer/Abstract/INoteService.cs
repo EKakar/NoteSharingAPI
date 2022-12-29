@@ -1,4 +1,4 @@
-﻿using NoteSharingAPI.Models;
+﻿using EntityLayer.Concrete;
 
 namespace BusinessLayer.Abstract
 {

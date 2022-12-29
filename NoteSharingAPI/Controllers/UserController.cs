@@ -1,7 +1,6 @@
-﻿using BusinessLayer.Concrete;
-using DataAccessLayer.EnityFramework;
+﻿using BusinessLayer.Abstract;
+using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Mvc;
-using NoteSharingAPI.Models;
 
 namespace NoteSharingAPI.Controllers
 {
@@ -9,13 +8,16 @@ namespace NoteSharingAPI.Controllers
     [Route("api/[controller]")]
     public class UserController : Controller
     {
-        UserManager userManager = new UserManager(new EfUserDal());
-
+        private readonly IUserService _userService;
+        public UserController(IUserService userService)
+        {
+            _userService = userService;
+        }
 
         [HttpPost]
         public async Task<IActionResult> AddUser(User user)
         {
-            userManager.TAdd(user);
+            _userService.TAdd(user);
             return Ok(user);
         }
     }

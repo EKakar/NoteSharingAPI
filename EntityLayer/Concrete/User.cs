@@ -1,13 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EntityLayer.Enums;
+using System.ComponentModel.DataAnnotations;
 
-namespace NoteSharingAPI.Models
+namespace EntityLayer.Concrete
 {
-    public enum SchoolLevel
-    {
-        Primary,
-        HighSchool,
-        University
-    }
 
     public class User
     {

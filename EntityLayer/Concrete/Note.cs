@@ -1,10 +1,15 @@
-﻿namespace NoteSharingAPI.Models
+﻿using EntityLayer.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EntityLayer.Concrete
 {
     public class Note
     {
         public int NoteId { get; set; }
         public string Description { get; set; }
-        public string FileUrl { get; set; }
+
+        [NotMapped]
+        public FileUploadModel FileUploadModel { get; set; }
         public int RatingScore { get; set; }
         public SchoolLevel NoteLevel { get; set; }
 

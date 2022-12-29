@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace NoteSharingAPI.Models
+namespace EntityLayer.Concrete
 {
     public class Category
     {

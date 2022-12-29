@@ -1,5 +1,4 @@
-﻿using BusinessLayer.Concrete;
-using DataAccessLayer.EnityFramework;
+﻿using BusinessLayer.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace NoteSharingAPI.Controllers
@@ -8,18 +7,25 @@ namespace NoteSharingAPI.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        UserManager userManager = new UserManager(new EfUserDal());
-        NoteManager noteManager = new NoteManager(new EfNoteDal());
+        private readonly INoteService _noteService;
+        private readonly IUserService _userService;
+
         public static bool isLogin = false;
+
+        public LoginController(INoteService noteService, IUserService userService)
+        {
+            _noteService = noteService;
+            _userService = userService;
+        }
 
         [HttpGet]
         public IActionResult Login(string mail, string password)
         {
-            var user = userManager.TGetList().FirstOrDefault(x => x.Mail == mail);
+            var user = _userService.TGetList().FirstOrDefault(x => x.Mail == mail);
 
-            if (userManager.Login(mail, password))
+            if (_userService.Login(mail, password))
             {
-                var notes = noteManager.TGetList().Where(x => x.UserId == user.UserId);
+                var notes = _noteService.TGetByID(user.UserId);
                 isLogin = true;
 
                 return Ok(notes);
