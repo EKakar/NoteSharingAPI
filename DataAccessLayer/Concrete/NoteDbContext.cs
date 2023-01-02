@@ -5,9 +5,8 @@ namespace DataAccessLayer.Concrete
 {
     public class NoteDbContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public NoteDbContext(DbContextOptions<NoteDbContext> options) : base(options)
         {
-            optionsBuilder.UseSqlServer("Server = E-KAKAR; Database = NoteSharingDB; Uid = sa; pwd = 1234;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

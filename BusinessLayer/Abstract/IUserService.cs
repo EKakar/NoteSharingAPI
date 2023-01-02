@@ -1,4 +1,5 @@
 ﻿using EntityLayer.Concrete;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BusinessLayer.Abstract
 {

@@ -1,6 +1,7 @@
 using BusinessLayer.Abstract;
 using BusinessLayer.Concrete;
 using DataAccessLayer.Concrete;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +12,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<NoteDbContext>();
+
+builder.Services.AddDbContext<NoteDbContext>(option =>
+{
+    option.UseSqlServer(builder.Configuration.GetConnectionString("NoteSharingCon"));
+});
+
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<INoteService, NoteService>();
 
 var app = builder.Build();
 
@@ -23,9 +31,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
+
 app.UseHttpsRedirection();
 
 app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
+
 
 app.UseAuthorization();
 

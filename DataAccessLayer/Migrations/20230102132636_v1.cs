@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataAccessLayer.Migrations
 {
-    public partial class FileUpdate : Migration
+    public partial class v1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,7 +15,7 @@ namespace DataAccessLayer.Migrations
                 {
                     CategoryID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    CategoryName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -28,8 +28,8 @@ namespace DataAccessLayer.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FileData = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FileData = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     FileType = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -53,11 +53,13 @@ namespace DataAccessLayer.Migrations
                 {
                     UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Mail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SchoolLevel = table.Column<int>(type: "int", nullable: false)
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Mail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SchoolLevel = table.Column<int>(type: "int", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -70,7 +72,7 @@ namespace DataAccessLayer.Migrations
                 {
                     NoteId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RatingScore = table.Column<int>(type: "int", nullable: false),
                     NoteLevel = table.Column<int>(type: "int", nullable: false),
                     CategoryID = table.Column<int>(type: "int", nullable: false),

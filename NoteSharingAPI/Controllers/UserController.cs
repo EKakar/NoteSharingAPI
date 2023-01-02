@@ -14,11 +14,40 @@ namespace NoteSharingAPI.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddUser(User user)
+
+        [HttpPost("authenticate")]
+        public async Task<IActionResult> Authenticate([FromBody] User userObj)
         {
-            _userService.TAdd(user);
-            return Ok(user);
+            if (userObj == null)
+            {
+                return BadRequest();
+            }
+
+            var user = _userService.TGetList().FirstOrDefault(x => x.Mail == userObj.Mail && x.Password == userObj.Password);
+
+            if (user == null)
+                return NotFound(new { Message = "User Not Found!" });
+
+            return Ok(new
+            {
+                Message = "Login Success!"
+            });
+
+        }
+
+
+        [HttpPost("register")]
+        public IActionResult RegisterUser([FromBody] User userObj)
+        {
+            if (userObj == null)
+                return BadRequest();
+
+
+            _userService.TAdd(userObj);
+            return Ok(new
+            {
+                Message = "User Registered!"
+            });
         }
     }
 }

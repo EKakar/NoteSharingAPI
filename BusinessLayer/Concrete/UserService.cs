@@ -10,14 +10,12 @@ namespace BusinessLayer.Concrete
 
         public UserService(NoteDbContext noteDbContext)
         {
-            _noteDbContext= noteDbContext;
+            _noteDbContext = noteDbContext;
         }
 
         public bool Login(string mail, string password)
         {
-            //KULLANICI ŞİFRE VE MAİL AYRI KONTROL ETTİR
-            _noteDbContext.Users.Where(x => x.Mail == mail && x.Password == password);
-            return true;
+            throw new NotImplementedException();
         }
 
         public void TAdd(User t)

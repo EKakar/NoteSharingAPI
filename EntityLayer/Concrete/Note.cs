@@ -11,7 +11,7 @@ namespace EntityLayer.Concrete
         [NotMapped]
         public FileUploadModel FileUploadModel { get; set; }
         public int RatingScore { get; set; }
-        public SchoolLevel NoteLevel { get; set; }
+        public int NoteLevel { get; set; }
 
         public int CategoryID { get; set; }
         public Category? Category { get; set; }
