@@ -8,6 +8,5 @@ namespace EntityLayer.Concrete
     {
         [NotMapped]
         public IFormFile FileDetails { get; set; }
-        public FileType FileType { get; set; }
     }
 }

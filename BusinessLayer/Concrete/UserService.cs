@@ -1,6 +1,13 @@
 ﻿using BusinessLayer.Abstract;
 using DataAccessLayer.Concrete;
 using EntityLayer.Concrete;
+using EntityLayer.Helpers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BusinessLayer.Concrete
 {
@@ -13,16 +20,64 @@ namespace BusinessLayer.Concrete
             _noteDbContext = noteDbContext;
         }
 
-        public bool Login(string mail, string password)
+        public async Task<bool> CheckEmailExistAsync(string email)
         {
-            throw new NotImplementedException();
+            return await _noteDbContext.Users.AnyAsync(x => x.Mail == email);
+        }
+
+        public string CheckPasswordStrength(string password)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (password.Length < 8)
+                sb.Append("Minimum password length should be 8 character" + Environment.NewLine);
+
+            if (!(Regex.IsMatch(password, "[a-z]") && Regex.IsMatch(password, "[A-Z]") && Regex.IsMatch(password, "[0-9]")))
+                sb.Append("Password should contain upper and lower alphanumeric characters" + Environment.NewLine);
+
+            if (!Regex.IsMatch(password, "[<,>,@,!,#,$,%,^,&,*,(,),_,+,\\[,\\], {,},?,:,;,|,',\\,../,~,`,=]"))
+                sb.Append("Password should contain special characters" + Environment.NewLine);
+
+            return sb.ToString();
+
+        }
+
+        public string CreateJwtToken(User user)
+        {
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes("veryverysceret.....");
+            var identity = new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+            });
+
+            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
+
+            var tokenDescripter = new SecurityTokenDescriptor
+            {
+                Subject = identity,
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = credentials
+            };
+            var token = jwtTokenHandler.CreateToken(tokenDescripter);
+            return jwtTokenHandler.WriteToken(token);
+
+        }
+
+        public User FindUser(string mail)
+        {
+            var user = _noteDbContext.Users.FirstOrDefault(x => x.Mail == mail);
+            return user;
         }
 
         public void TAdd(User t)
         {
+            t.Password = PasswordHasher.HashPassword(t.Password);
+            t.Role = "User";
+            t.Token = "";
+
             _noteDbContext.Add(t);
             _noteDbContext.SaveChanges();
-
         }
 
         public void TDelete(User t)
@@ -47,5 +102,6 @@ namespace BusinessLayer.Concrete
             _noteDbContext.Update(t);
             _noteDbContext.SaveChanges();
         }
+
     }
 }

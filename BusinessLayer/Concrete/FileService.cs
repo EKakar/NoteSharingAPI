@@ -16,7 +16,7 @@ namespace BusinessLayer.Concrete
             _noteDbContext = noteDbContext;
         }
 
-        public async Task PostFileAsync(IFormFile fileData, FileType fileType)
+        public async Task PostFileAsync(IFormFile fileData)
         {
             try
             {
@@ -24,7 +24,6 @@ namespace BusinessLayer.Concrete
                 {
                     ID = 0,
                     FileName = fileData.FileName,
-                    FileType = fileType,
                 };
 
                 using (var stream = new MemoryStream())

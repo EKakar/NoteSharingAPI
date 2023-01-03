@@ -20,55 +20,6 @@ namespace NoteSharingAPI.Controllers
         }
 
 
-        /// <summary>
-        /// Single File Upload
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        [HttpPost("PostSingleFile")]
-        public async Task<ActionResult> PostSingleFile([FromForm] FileUploadModel fileUploadModel)
-        {
-            if (fileUploadModel == null)
-            {
-                return BadRequest();
-            }
-
-            try
-            {
-                await _fileService.PostFileAsync(fileUploadModel.FileDetails, fileUploadModel.FileType);
-                return Ok();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Download File
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        [HttpGet("DownloadFile/{id}")]
-        public async Task<ActionResult> DownloadFile(int id)
-        {
-            if (id < 1)
-            {
-                return BadRequest();
-            }
-
-            try
-            {
-                await _fileService.DownloadFileById(id);
-                return Ok();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-
 
         [HttpGet]
         public IActionResult GetAllNotes()
@@ -77,23 +28,23 @@ namespace NoteSharingAPI.Controllers
             return Ok(notes);
         }
 
-        [HttpPost]
+        [HttpPost("addNote")]
         public async Task<IActionResult> AddNotes([FromBody] Note note)
         {
             _noteService.TAdd(note);
             return Ok(note);
         }
 
-        [HttpGet("/{userId}")]
+        [HttpGet("userNotes")]
         public async Task<IActionResult> GetNoteForUser(int userId)
         {
             var user = _userService.TGetByID(userId);
 
-            var notes = _noteService.TGetList().Where(x => x.UserId == user.UserId).ToList();
+            var notes = _noteService.TGetList().Where(x => x.User.UserId == user.UserId).ToList();
             return Ok(notes);
         }
 
-        [HttpGet("{mail}")]
+        [HttpGet("findNote")]
         public async Task<IActionResult> GetNoteBySchoolLevel(string mail)
         {
             var user = _userService.TGetList().Where(u => u.Mail == mail).FirstOrDefault();
@@ -101,7 +52,7 @@ namespace NoteSharingAPI.Controllers
             return Ok(notes);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> DeleteNote(int id)
         {
             _noteService.TDelete(_noteService.TGetByID(id));

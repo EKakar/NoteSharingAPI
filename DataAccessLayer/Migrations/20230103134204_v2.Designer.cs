@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(NoteDbContext))]
-    [Migration("20230102145729_v2")]
+    [Migration("20230103134204_v2")]
     partial class v2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,31 +55,25 @@ namespace DataAccessLayer.Migrations
                     b.Property<string>("FileName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FileType")
+                    b.Property<int>("NoteRef")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
 
-                    b.ToTable("FileDetails");
+                    b.ToTable("NotesFiles", (string)null);
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.FileUploadModel", b =>
                 {
-                    b.Property<int>("FileType")
-                        .HasColumnType("int");
-
                     b.ToTable("FileUploadModel");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.Note", b =>
                 {
                     b.Property<int>("NoteId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NoteId"), 1L, 1);
-
-                    b.Property<int>("CategoryID")
+                    b.Property<int?>("CategoryID")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -91,7 +85,7 @@ namespace DataAccessLayer.Migrations
                     b.Property<int>("RatingScore")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("NoteId");
@@ -100,7 +94,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notes");
+                    b.ToTable("NotesFiles", (string)null);
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.User", b =>
@@ -140,20 +134,39 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("EntityLayer.Concrete.Note", b =>
                 {
                     b.HasOne("EntityLayer.Concrete.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryID")
+                        .WithMany("CNotes")
+                        .HasForeignKey("CategoryID");
+
+                    b.HasOne("EntityLayer.Concrete.FileDetails", "FileDetails")
+                        .WithOne("Note")
+                        .HasForeignKey("EntityLayer.Concrete.Note", "NoteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("EntityLayer.Concrete.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Notes")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Category");
 
+                    b.Navigation("FileDetails");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.Category", b =>
+                {
+                    b.Navigation("CNotes");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.FileDetails", b =>
+                {
+                    b.Navigation("Note");
+                });
+
+            modelBuilder.Entity("EntityLayer.Concrete.User", b =>
+                {
+                    b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618
         }

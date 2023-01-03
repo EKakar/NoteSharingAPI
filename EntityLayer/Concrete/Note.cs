@@ -1,5 +1,4 @@
-﻿using EntityLayer.Enums;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace EntityLayer.Concrete
 {
@@ -8,15 +7,13 @@ namespace EntityLayer.Concrete
         public int NoteId { get; set; }
         public string Description { get; set; }
 
-        [NotMapped]
-        public FileUploadModel FileUploadModel { get; set; }
         public int RatingScore { get; set; }
         public int NoteLevel { get; set; }
 
-        public int CategoryID { get; set; }
-        public Category? Category { get; set; }
+        [AllowNull]
+        public Category Category { get; set; }
 
-        public int UserId { get; set; }
-        public User? User { get; set; }
+        [AllowNull]
+        public User User { get; set; }
     }
 }

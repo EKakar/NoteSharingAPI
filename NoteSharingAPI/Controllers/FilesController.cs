@@ -30,7 +30,7 @@ namespace NoteSharingAPI.Controllers
 
             try
             {
-                await _iFileService.PostFileAsync(fileUploadModel.FileDetails, fileUploadModel.FileType);
+                await _iFileService.PostFileAsync(fileUploadModel.FileDetails);
                 return Ok();
             }
             catch (Exception)

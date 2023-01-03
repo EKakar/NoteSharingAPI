@@ -5,7 +5,7 @@ namespace BusinessLayer.Abstract
 {
     public interface IFileService
     {
-        Task PostFileAsync(IFormFile fileData, FileType fileType);
+        Task PostFileAsync(IFormFile fileData);
         Task DownloadFileById(int id);
     }
 }

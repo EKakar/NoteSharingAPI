@@ -29,23 +29,13 @@ namespace DataAccessLayer.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FileData = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    FileType = table.Column<int>(type: "int", nullable: false)
+                    FileData = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FileDetails", x => x.ID);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "FileUploadModel",
-                columns: table => new
-                {
-                    FileType = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                });
 
             migrationBuilder.CreateTable(
                 name: "Users",
@@ -70,13 +60,12 @@ namespace DataAccessLayer.Migrations
                 name: "Notes",
                 columns: table => new
                 {
-                    NoteId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NoteId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RatingScore = table.Column<int>(type: "int", nullable: false),
                     NoteLevel = table.Column<int>(type: "int", nullable: false),
-                    CategoryID = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    CategoryID = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -85,14 +74,18 @@ namespace DataAccessLayer.Migrations
                         name: "FK_Notes_Categories_CategoryID",
                         column: x => x.CategoryID,
                         principalTable: "Categories",
-                        principalColumn: "CategoryID",
+                        principalColumn: "CategoryID");
+                    table.ForeignKey(
+                        name: "FK_Notes_FileDetails_NoteId",
+                        column: x => x.NoteId,
+                        principalTable: "FileDetails",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Notes_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -109,9 +102,6 @@ namespace DataAccessLayer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "FileDetails");
-
-            migrationBuilder.DropTable(
                 name: "FileUploadModel");
 
             migrationBuilder.DropTable(
@@ -119,6 +109,9 @@ namespace DataAccessLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "FileDetails");
 
             migrationBuilder.DropTable(
                 name: "Users");
