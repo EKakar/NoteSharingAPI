@@ -1,7 +1,6 @@
 ﻿using BusinessLayer.Abstract;
 using DataAccessLayer.Concrete;
 using EntityLayer.Concrete;
-using EntityLayer.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 

@@ -26,9 +26,8 @@ namespace NoteSharingAPI.Controllers
             return Ok(notes);
         }
 
-        [Authorize]
         [HttpPost("addNote")]
-        public async Task<IActionResult> AddNotes([FromBody] Note note)
+        public async Task<IActionResult> AddNotes(Note note)
         {
             _noteService.TAdd(note);
             return Ok(note);
