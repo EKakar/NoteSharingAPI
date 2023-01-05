@@ -24,6 +24,7 @@ builder.Services.AddDbContext<NoteDbContext>(option =>
 
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<INoteService, NoteService>();
 
 builder.Services.AddAuthentication(x =>

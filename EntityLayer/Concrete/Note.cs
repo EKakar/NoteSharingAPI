@@ -10,10 +10,12 @@ namespace EntityLayer.Concrete
         public int RatingScore { get; set; }
         public int NoteLevel { get; set; }
 
-        [AllowNull]
-        public Category Category { get; set; }
+        public int UserId { get; set; }
 
-        [AllowNull]
-        public User User { get; set; }
+        //[AllowNull]
+        //public Category Category { get; set; }
+
+        //[AllowNull]
+        //public User User { get; set; }
     }
 }

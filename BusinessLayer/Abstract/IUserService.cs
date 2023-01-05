@@ -8,5 +8,6 @@ namespace BusinessLayer.Abstract
         string CheckPasswordStrength(string password);
         User FindUser(string mail);
         string CreateJwtToken(User user);
+        int GetUserId(string mail);
     }
 }

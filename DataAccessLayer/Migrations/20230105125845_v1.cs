@@ -60,12 +60,13 @@ namespace DataAccessLayer.Migrations
                 name: "Notes",
                 columns: table => new
                 {
-                    NoteId = table.Column<int>(type: "int", nullable: false),
+                    NoteId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RatingScore = table.Column<int>(type: "int", nullable: false),
                     NoteLevel = table.Column<int>(type: "int", nullable: false),
-                    CategoryID = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: true)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    CategoryID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -76,16 +77,11 @@ namespace DataAccessLayer.Migrations
                         principalTable: "Categories",
                         principalColumn: "CategoryID");
                     table.ForeignKey(
-                        name: "FK_Notes_FileDetails_NoteId",
-                        column: x => x.NoteId,
-                        principalTable: "FileDetails",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Notes_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -102,6 +98,9 @@ namespace DataAccessLayer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "FileDetails");
+
+            migrationBuilder.DropTable(
                 name: "FileUploadModel");
 
             migrationBuilder.DropTable(
@@ -109,9 +108,6 @@ namespace DataAccessLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
-
-            migrationBuilder.DropTable(
-                name: "FileDetails");
 
             migrationBuilder.DropTable(
                 name: "Users");

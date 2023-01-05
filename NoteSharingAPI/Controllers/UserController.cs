@@ -36,6 +36,13 @@ namespace NoteSharingAPI.Controllers
             });
         }
 
+        [HttpGet("mail")]
+        public int GetUserId(string mail)
+        {
+            return _userService.GetUserId(mail);
+        }
+
+
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] User userObj)
         {
@@ -55,6 +62,8 @@ namespace NoteSharingAPI.Controllers
             }
 
             user.Token = _userService.CreateJwtToken(user);
+
+            _userService.GetUserId(user.Mail);
 
             return Ok(new
             {

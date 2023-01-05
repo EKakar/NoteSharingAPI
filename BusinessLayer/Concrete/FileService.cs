@@ -57,7 +57,7 @@ namespace BusinessLayer.Concrete
 
                 var content = new MemoryStream(file.Result.FileData);
                 var path = Path.Combine(
-                   Directory.GetCurrentDirectory(), "FileDownloaded",
+                   Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                    file.Result.FileName);
 
                 await CopyStream(content, path);

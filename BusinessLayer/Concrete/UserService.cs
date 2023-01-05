@@ -34,7 +34,7 @@ namespace BusinessLayer.Concrete
             if (!(Regex.IsMatch(password, "[a-z]") && Regex.IsMatch(password, "[A-Z]") && Regex.IsMatch(password, "[0-9]")))
                 sb.Append("Password should contain upper and lower alphanumeric characters" + Environment.NewLine);
 
-            if (!Regex.IsMatch(password, "[<,>,@,!,#,$,%,^,&,*,(,),_,+,\\[,\\], {,},?,:,;,|,',\\,../,~,`,=]"))
+            if (!Regex.IsMatch(password, "[<,>,@,!,#,$,%,^,&,*,(,),_,+,\\[,\\], {,},?,:,;,|,',\\,../,~,`,=,-]"))
                 sb.Append("Password should contain special characters" + Environment.NewLine);
 
             return sb.ToString();
@@ -68,6 +68,12 @@ namespace BusinessLayer.Concrete
         {
             var user = _noteDbContext.Users.FirstOrDefault(x => x.Mail == mail);
             return user;
+        }
+
+        public int GetUserId(string mail)
+        {
+            var userObj = _noteDbContext.Users.FirstOrDefault(x => x.Mail == mail);
+            return userObj.UserId;
         }
 
         public void TAdd(User t)

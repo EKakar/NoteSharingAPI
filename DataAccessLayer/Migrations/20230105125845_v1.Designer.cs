@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(NoteDbContext))]
-    [Migration("20230103133433_v1")]
+    [Migration("20230105125845_v1")]
     partial class v1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,7 +68,10 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("EntityLayer.Concrete.Note", b =>
                 {
                     b.Property<int>("NoteId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NoteId"), 1L, 1);
 
                     b.Property<int?>("CategoryID")
                         .HasColumnType("int");
@@ -82,7 +85,7 @@ namespace DataAccessLayer.Migrations
                     b.Property<int>("RatingScore")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("NoteId");
@@ -130,35 +133,20 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("EntityLayer.Concrete.Note", b =>
                 {
-                    b.HasOne("EntityLayer.Concrete.Category", "Category")
-                        .WithMany("CNotes")
+                    b.HasOne("EntityLayer.Concrete.Category", null)
+                        .WithMany("Notes")
                         .HasForeignKey("CategoryID");
 
-                    b.HasOne("EntityLayer.Concrete.FileDetails", "FileDetails")
-                        .WithOne("Note")
-                        .HasForeignKey("EntityLayer.Concrete.Note", "NoteId")
+                    b.HasOne("EntityLayer.Concrete.User", null)
+                        .WithMany("Notes")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("EntityLayer.Concrete.User", "User")
-                        .WithMany("Notes")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Category");
-
-                    b.Navigation("FileDetails");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.Category", b =>
                 {
-                    b.Navigation("CNotes");
-                });
-
-            modelBuilder.Entity("EntityLayer.Concrete.FileDetails", b =>
-                {
-                    b.Navigation("Note");
+                    b.Navigation("Notes");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.User", b =>

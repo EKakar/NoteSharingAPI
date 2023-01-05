@@ -55,7 +55,10 @@ namespace NoteSharingAPI.Controllers
             try
             {
                 await _iFileService.DownloadFileById(id);
-                return Ok();
+                return Ok(new
+                {
+                    Message = "File is Successfully Downloaded!"
+                });
             }
             catch (Exception)
             {

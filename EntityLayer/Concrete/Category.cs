@@ -8,5 +8,8 @@ namespace EntityLayer.Concrete
         public int CategoryID { get; set; }
         [MaxLength(50)]
         public string CategoryName { get; set; }
+
+        public ICollection<Note> Notes{ get; set; }
+
     }
 }
