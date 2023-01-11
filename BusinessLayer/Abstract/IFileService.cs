@@ -7,5 +7,6 @@ namespace BusinessLayer.Abstract
     {
         Task PostFileAsync(IFormFile fileData);
         Task DownloadFileById(int id);
+        Task DeleteFile(int id);
     }
 }

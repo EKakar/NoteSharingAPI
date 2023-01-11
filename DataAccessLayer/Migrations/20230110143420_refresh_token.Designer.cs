@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(NoteDbContext))]
-    [Migration("20230105125845_v1")]
-    partial class v1
+    [Migration("20230110143420_refresh_token")]
+    partial class refresh_token
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,37 @@ namespace DataAccessLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("DataAccessLayer.Concrete.NoteDbContext+CategoryList", b =>
+                {
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("CategoryLists");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Concrete.NoteDbContext+NoteCategory", b =>
+                {
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NoteDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("NoteCategories");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Concrete.NoteDbContext+UserList", b =>
+                {
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("UserLists");
+                });
 
             modelBuilder.Entity("EntityLayer.Concrete.Category", b =>
                 {
@@ -58,11 +89,6 @@ namespace DataAccessLayer.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("FileDetails");
-                });
-
-            modelBuilder.Entity("EntityLayer.Concrete.FileUploadModel", b =>
-                {
-                    b.ToTable("FileUploadModel");
                 });
 
             modelBuilder.Entity("EntityLayer.Concrete.Note", b =>
@@ -116,6 +142,12 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Role")
                         .HasColumnType("nvarchar(max)");

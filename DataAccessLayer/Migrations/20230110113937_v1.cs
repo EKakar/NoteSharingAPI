@@ -36,7 +36,6 @@ namespace DataAccessLayer.Migrations
                     table.PrimaryKey("PK_FileDetails", x => x.ID);
                 });
 
-
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -99,9 +98,6 @@ namespace DataAccessLayer.Migrations
         {
             migrationBuilder.DropTable(
                 name: "FileDetails");
-
-            migrationBuilder.DropTable(
-                name: "FileUploadModel");
 
             migrationBuilder.DropTable(
                 name: "Notes");

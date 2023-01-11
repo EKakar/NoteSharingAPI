@@ -20,18 +20,17 @@ namespace NoteSharingAPI.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        [HttpPost("PostSingleFile")]
-        public async Task<ActionResult> PostSingleFile([FromForm] FileUploadModel fileUploadModel)
+        [HttpPost("PostFile")]
+        public async Task<ActionResult> PostSingleFile()
         {
-
-            if (fileUploadModel == null)
-            {
-                return BadRequest();
-            }
 
             try
             {
-                await _iFileService.PostFileAsync(fileUploadModel.FileDetails);
+                var formCollection = await Request.ReadFormAsync();
+
+                var file = formCollection.Files[0];
+
+                await _iFileService.PostFileAsync(file);
                 return Ok();
             }
             catch (Exception)

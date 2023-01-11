@@ -1,7 +1,10 @@
 ﻿using BusinessLayer.Abstract;
+using DataAccessLayer.Concrete;
 using EntityLayer.Concrete;
+using EntityLayer.Dto;
 using EntityLayer.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace NoteSharingAPI.Controllers
 {
@@ -10,10 +13,21 @@ namespace NoteSharingAPI.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly NoteDbContext _noteDbContext;
+
+        public UserController(IUserService userService, NoteDbContext noteDbContext)
         {
+            _noteDbContext = noteDbContext;
             _userService = userService;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> UserList()
+        {
+            var users = _userService.TGetList();
+            return Ok(users);
+        }
+
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] User userObj)
@@ -36,13 +50,6 @@ namespace NoteSharingAPI.Controllers
             });
         }
 
-        [HttpGet("mail")]
-        public int GetUserId(string mail)
-        {
-            return _userService.GetUserId(mail);
-        }
-
-
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] User userObj)
         {
@@ -62,15 +69,40 @@ namespace NoteSharingAPI.Controllers
             }
 
             user.Token = _userService.CreateJwtToken(user);
+            var newAccessToken = user.Token;
+            var newRefreshToken = _userService.CreateRefreshToken();
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(1);
+            await _noteDbContext.SaveChangesAsync();
 
-            _userService.GetUserId(user.Mail);
-
-            return Ok(new
+            return Ok(new TokenApiDto()
             {
-                Token = user.Token,
-                Message = "Login Success!"
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
             });
+        }
 
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh(TokenApiDto tokenApiDto)
+        {
+            if (tokenApiDto is null)
+                return BadRequest("Invalid Client Request");
+            string accessToken = tokenApiDto.AccessToken;
+            string refreshToken= tokenApiDto.RefreshToken;
+            var principal = _userService.GetPrincipalFromExpiredToken(accessToken);
+            var firstname = principal.Identity.Name;
+            var user = await _noteDbContext.Users.FirstOrDefaultAsync(u => u.FirstName == firstname);
+            if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+                return BadRequest("Invalid Request");
+            var newAccessToken = _userService.CreateJwtToken(user);
+            var newRefreshToken = _userService.CreateRefreshToken();
+            user.RefreshToken = newRefreshToken;
+            await _noteDbContext.SaveChangesAsync();
+            return Ok(new TokenApiDto()
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
+            });
         }
     }
 }

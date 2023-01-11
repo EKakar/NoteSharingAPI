@@ -1,4 +1,5 @@
 ﻿using EntityLayer.Concrete;
+using System.Security.Claims;
 
 namespace BusinessLayer.Abstract
 {
@@ -9,5 +10,7 @@ namespace BusinessLayer.Abstract
         User FindUser(string mail);
         string CreateJwtToken(User user);
         int GetUserId(string mail);
+        string CreateRefreshToken();
+        ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using BusinessLayer.Abstract;
+using DataAccessLayer.Concrete;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace NoteSharingAPI.Controllers
 {
@@ -9,9 +11,12 @@ namespace NoteSharingAPI.Controllers
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService categoryService)
+        private readonly NoteDbContext _noteDbContext;
+
+        public CategoryController(ICategoryService categoryService, NoteDbContext noteDbContext)
         {
             _categoryService = categoryService;
+            _noteDbContext = noteDbContext;
         }
 
         [HttpGet]

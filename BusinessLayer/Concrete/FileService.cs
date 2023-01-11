@@ -15,6 +15,11 @@ namespace BusinessLayer.Concrete
             _noteDbContext = noteDbContext;
         }
 
+        public async Task DeleteFile(int id)
+        {
+            await _noteDbContext.Database.ExecuteSqlRawAsync($"Exec sp_DeleteFile {id}");
+        }
+
         public async Task PostFileAsync(IFormFile fileData)
         {
             try
@@ -66,8 +71,6 @@ namespace BusinessLayer.Concrete
                 throw;
             }
         }
-
-
     }
 }
 

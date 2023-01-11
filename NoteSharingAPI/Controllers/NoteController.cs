@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Abstract;
+using DataAccessLayer.Concrete;
 using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ namespace NoteSharingAPI.Controllers
         private readonly INoteService _noteService;
         private readonly IUserService _userService;
 
-        public NoteController(INoteService noteService, IUserService userService)
+        public NoteController(INoteService noteService, IUserService userService, NoteDbContext noteDbContext)
         {
             _noteService = noteService;
             _userService = userService;
@@ -27,19 +28,27 @@ namespace NoteSharingAPI.Controllers
         }
 
         [HttpPost("addNote")]
-        public async Task<IActionResult> AddNotes(Note note)
+        public async Task<IActionResult> AddNotes([FromBody] Note note)
         {
+
             _noteService.TAdd(note);
-            return Ok(note);
+            return Ok(new
+            {
+                Message = "Successfully Added!"
+            });
         }
 
-        [Authorize]
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetNoteForUser(int userId)
-        {
-            var user = _userService.TGetByID(userId);
 
-            var notes = _noteService.TGetList().Where(x => x.UserId == user.UserId).ToList();
+        [Authorize]
+        [HttpGet("{mail}")]
+        public async Task<IActionResult> GetUserNotes(string mail)
+        {
+            var user = _userService.FindUser(mail);
+            var notes = _noteService.TGetListByAction(x => x.UserId == user.UserId);
+            if (notes == null)
+            {
+                return Ok(new List<Note>());
+            }
             return Ok(notes);
         }
 
@@ -47,8 +56,8 @@ namespace NoteSharingAPI.Controllers
         [HttpGet("findNote")]
         public async Task<IActionResult> GetNoteBySchoolLevel(string mail)
         {
-            var user = _userService.TGetList().Where(u => u.Mail == mail).FirstOrDefault();
-            var notes = _noteService.TGetList().Where(x => x.NoteLevel == user.SchoolLevel).ToList();
+            var user = _userService.FindUser(mail);
+            var notes = _noteService.TGetListBySchoolLevel(x => x.NoteLevel == user.SchoolLevel);
             return Ok(notes);
         }
 
@@ -56,7 +65,13 @@ namespace NoteSharingAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteNote(int id)
         {
-            _noteService.TDelete(_noteService.TGetByID(id));
+            var note = _noteService.TGetByID(id);
+            if (note == null)
+            {
+                return BadRequest("This file is already deleted");
+            }
+
+            await _noteService.DeleteNote(id);
 
             return Ok(new
             {
