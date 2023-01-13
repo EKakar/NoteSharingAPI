@@ -88,10 +88,10 @@ namespace NoteSharingAPI.Controllers
             if (tokenApiDto is null)
                 return BadRequest("Invalid Client Request");
             string accessToken = tokenApiDto.AccessToken;
-            string refreshToken= tokenApiDto.RefreshToken;
+            string refreshToken = tokenApiDto.RefreshToken;
             var principal = _userService.GetPrincipalFromExpiredToken(accessToken);
-            var firstname = principal.Identity.Name;
-            var user = await _noteDbContext.Users.FirstOrDefaultAsync(u => u.FirstName == firstname);
+            var mail = principal.Identity.Name;
+            var user = await _noteDbContext.Users.FirstOrDefaultAsync(u => u.Mail == mail);
             if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
                 return BadRequest("Invalid Request");
             var newAccessToken = _userService.CreateJwtToken(user);

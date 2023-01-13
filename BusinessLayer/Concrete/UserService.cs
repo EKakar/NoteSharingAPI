@@ -9,7 +9,6 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using static DataAccessLayer.Concrete.NoteDbContext;
 
 namespace BusinessLayer.Concrete
 {
@@ -50,7 +49,7 @@ namespace BusinessLayer.Concrete
             var identity = new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.Role, user.Role),
-                new Claim(ClaimTypes.Name, $"{user.FirstName}"),
+                new Claim(ClaimTypes.Name, $"{user.Mail}"),
             });
 
             var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
@@ -137,7 +136,8 @@ namespace BusinessLayer.Concrete
 
         public List<User> TGetList()
         {
-            var users = _noteDbContext.Users.FromSqlInterpolated($"EXEC sp_GetUsers").ToList();
+            var users = _noteDbContext.Users.ToList();
+                //.FromSqlInterpolated($"EXEC sp_GetUsers").ToList();
 
             return users;
         }

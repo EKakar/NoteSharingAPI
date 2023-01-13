@@ -17,7 +17,7 @@ namespace DataAccessLayer.Migrations
                     Delete fd from FileDetails fd 
                     where fd.ID= @id
                     ");
-            
+
             migrationBuilder.Sql($@"
                     create proc sp_DeleteNote
                     (
@@ -33,7 +33,6 @@ namespace DataAccessLayer.Migrations
         {
             migrationBuilder.Sql($@"DROP PROC sp_DeleteFile");
             migrationBuilder.Sql($@"DROP PROC sp_DeleteNote");
-
         }
     }
 }

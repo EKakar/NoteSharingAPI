@@ -1,8 +1,8 @@
 ﻿using BusinessLayer.Abstract;
 using DataAccessLayer.Concrete;
 using EntityLayer.Concrete;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using static DataAccessLayer.Concrete.NoteDbContext;
 
 namespace BusinessLayer.Concrete
 {
@@ -31,7 +31,7 @@ namespace BusinessLayer.Concrete
 
         public Note TGetByID(int id)
         {
-            var note = _noteDbContext.Notes.Where(x => x.NoteId == id).FirstOrDefault();
+            var note = _noteDbContext.Notes.FirstOrDefault(x => x.NoteId == id);
             return note;
         }
 
@@ -56,10 +56,17 @@ namespace BusinessLayer.Concrete
             _noteDbContext.SaveChanges();
         }
 
-        public async Task DeleteNote(int id)
+        public void DeleteNote(int id)
         {
-            await _noteDbContext.Database.ExecuteSqlRawAsync($"Exec sp_DeleteNote {id}");
-            await _fileService.DeleteFile(id);
+            _noteDbContext.Database.ExecuteSqlRawAsync($"EXECUTE dbo.sp_deleteNote {id}");
+            _fileService.DeleteFile(id);
+            _noteDbContext.SaveChanges();
+        }
+
+        public NoteCategory? GetNoteAndCategory(int id)
+        {
+            var note = _noteDbContext.NoteCategories.FromSqlRaw($"exec sp_getNoteById {id}").ToList().FirstOrDefault();
+            return note;
         }
     }
 }

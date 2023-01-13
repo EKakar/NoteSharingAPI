@@ -1,4 +1,5 @@
 ﻿using EntityLayer.Concrete;
+using static DataAccessLayer.Concrete.NoteDbContext;
 
 namespace BusinessLayer.Abstract
 {
@@ -6,6 +7,8 @@ namespace BusinessLayer.Abstract
     {
         IEnumerable<Note> TGetListByAction(Func<Note, bool> condition);
         IEnumerable<Note> TGetListBySchoolLevel(Func<Note, bool> condition);
-        Task DeleteNote(int id);
+        void DeleteNote(int id);
+        NoteCategory GetNoteAndCategory(int id);
     }
 }
+

@@ -17,8 +17,8 @@ namespace DataAccessLayer.Concrete
         [NotMapped]
         public class NoteCategory
         {
-            public string NoteDescription { get; set; }
-            public string Category { get; set; }
+            public string Title { get; set; }
+            public string Category{ get; set; }
         }
 
 
